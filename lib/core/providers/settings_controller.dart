@@ -7,16 +7,24 @@ import '../../data/services/local_store.dart';
 import 'app_providers.dart';
 
 class AppSettings {
-  const AppSettings({required this.themeMode, required this.locale, required this.onboardingSeen});
+  const AppSettings({
+    required this.themeMode,
+    required this.locale,
+    required this.onboardingSeen,
+    this.notificationsEnabled = true,
+  });
 
   final ThemeMode themeMode;
   final Locale locale;
   final bool onboardingSeen;
+  final bool notificationsEnabled;
 
-  AppSettings copyWith({ThemeMode? themeMode, Locale? locale, bool? onboardingSeen}) => AppSettings(
+  AppSettings copyWith({ThemeMode? themeMode, Locale? locale, bool? onboardingSeen, bool? notificationsEnabled}) =>
+      AppSettings(
         themeMode: themeMode ?? this.themeMode,
         locale: locale ?? this.locale,
         onboardingSeen: onboardingSeen ?? this.onboardingSeen,
+        notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       );
 }
 
@@ -32,6 +40,7 @@ class SettingsController extends Notifier<AppSettings> {
       themeMode: theme,
       locale: Locale(lang),
       onboardingSeen: _store.readBool(StoreKeys.onboardingSeen) ?? false,
+      notificationsEnabled: _store.readBool(StoreKeys.notifications) ?? true,
     );
   }
 
@@ -43,6 +52,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setLanguage(String languageCode) async {
     state = state.copyWith(locale: Locale(languageCode));
     await _store.writeString(StoreKeys.language, languageCode);
+  }
+
+  Future<void> setNotifications(bool enabled) async {
+    state = state.copyWith(notificationsEnabled: enabled);
+    await _store.writeBool(StoreKeys.notifications, enabled);
   }
 
   Future<void> completeOnboarding() async {

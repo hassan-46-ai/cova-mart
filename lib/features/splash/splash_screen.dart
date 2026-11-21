@@ -44,7 +44,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   /// Re-open the screen the user was on when the app was closed.
   void _resume() {
-    final saved = ref.read(localStoreProvider).readString(StoreKeys.lastRoute);
+    final launch = ref.read(notificationServiceProvider).takeLaunchPayload();
+    final saved = launch ?? ref.read(localStoreProvider).readString(StoreKeys.lastRoute);
     final router = GoRouter.of(context);
     if (saved == null || saved == '/home') {
       router.go('/home');

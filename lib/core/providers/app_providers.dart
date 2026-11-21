@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/catalog.dart';
+import '../notifications/notification_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/services/local_store.dart';
 import '../../data/services/location_service.dart';
@@ -14,6 +15,10 @@ final sharedPrefsProvider = Provider<SharedPreferences>(
 
 final catalogProvider = Provider<Catalog>(
   (ref) => throw UnimplementedError('catalogProvider must be overridden'),
+);
+
+final notificationServiceProvider = Provider<NotificationService>(
+  (ref) => throw UnimplementedError('notificationServiceProvider must be overridden'),
 );
 
 final localStoreProvider = Provider<LocalStore>((ref) => LocalStore(ref.watch(sharedPrefsProvider)));

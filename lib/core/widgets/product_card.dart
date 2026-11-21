@@ -9,7 +9,6 @@ import '../../features/favorites/favorites_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
-import 'entrance.dart';
 import 'pressable.dart';
 import 'product_image.dart';
 
@@ -266,7 +265,7 @@ class SliverProductGrid extends StatelessWidget {
           childAspectRatio: 0.66,
         ),
         delegate: SliverChildBuilderDelegate(
-          (context, i) => ProductCard(product: products[i]).entrance(index: i),
+          (context, i) => ProductCard(product: products[i]),
           childCount: products.length,
         ),
       ),

@@ -87,6 +87,8 @@ class AppLocalizations {
   String get shop => _t('shop');
   String get byCategory => _t('byCategory');
   String get startingFrom => _t('startingFrom');
+  String get allProducts => _t('allProducts');
+  String get browseCategories => _t('browseCategories');
   String itemsCount(int n) => _f(n == 1 ? 'itemsCount.one' : 'itemsCount', {'n': n});
   String get filters => _t('filters');
   String get reset => _t('reset');
@@ -206,6 +208,11 @@ class AppLocalizations {
   String get confirmLocation => _t('confirmLocation');
   String get addressDetails => _t('addressDetails');
   String get locationUnavailable => _t('locationUnavailable');
+  String get locationServiceOff => _t('locationServiceOff');
+  String get locationDenied => _t('locationDenied');
+  String get locationDeniedForever => _t('locationDeniedForever');
+  String get locationNotConfigured => _t('locationNotConfigured');
+  String get openSettings => _t('openSettings');
   String get deliveryLocation => _t('deliveryLocation');
   String get editProfile => _t('editProfile');
   String get saveChanges => _t('saveChanges');
@@ -219,6 +226,15 @@ class AppLocalizations {
   String get logout => _t('logout');
   String get logoutConfirm => _t('logoutConfirm');
   String get cancel => _t('cancel');
+  String notifOrderTitle(String name) => _f('notifOrderTitle', {'name': name});
+  String get notifPreparingBody => _t('notifPreparingBody');
+  String get notifOnTheWayBody => _t('notifOnTheWayBody');
+  String get notifDeliveredBody => _t('notifDeliveredBody');
+  String get notifChannelName => _t('notifChannelName');
+  String get notifChannelDesc => _t('notifChannelDesc');
+  String get notificationsTitle => _t('notificationsTitle');
+  String get notificationsSubtitle => _t('notificationsSubtitle');
+  String get notifPermissionDenied => _t('notifPermissionDenied');
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

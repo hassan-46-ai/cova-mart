@@ -17,8 +17,6 @@ import '../../core/widgets/section_header.dart';
 import '../../data/models/category.dart';
 import '../auth/auth_controller.dart';
 import '../map/addresses_controller.dart';
-import '../orders/order_status_ui.dart';
-import '../orders/orders_controller.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -37,7 +35,6 @@ class HomeScreen extends ConsumerWidget {
         slivers: [
           const SliverToBoxAdapter(child: _HomeHeader()),
           gap(20),
-          const SliverToBoxAdapter(child: _ActiveOrderCard()),
           const SliverToBoxAdapter(child: _PromoCarousel()),
           gap(26),
           SliverToBoxAdapter(
@@ -204,65 +201,6 @@ class _HomeHeader extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// Shows the newest order that is still on its way.
-class _ActiveOrderCard extends ConsumerWidget {
-  const _ActiveOrderCard();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final orders = ref.watch(ordersProvider);
-    // Only run the 2-second ticker while an order is young enough to still change.
-    final fresh = orders.any((o) => DateTime.now().difference(o.createdAt) < const Duration(minutes: 6));
-    if (!fresh) return const SizedBox.shrink();
-    final now = ref.watch(nowProvider).value ?? DateTime.now();
-    final active = orders.where((o) => o.statusAt(now).isActive).toList();
-    if (active.isEmpty) return const SizedBox.shrink();
-
-    final order = active.first;
-    final status = order.statusAt(now);
-    final c = context.colors;
-    final l10n = context.l10n;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-      child: Pressable(
-        onTap: () => context.push('/order/${order.id}'),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: c.card,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.cyan.withAlpha(140)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: c.fab),
-                child: Icon(status.icon, color: c.onFab),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(status.label(l10n), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
-                    const SizedBox(height: 2),
-                    Text('#${order.id}', style: TextStyle(color: c.muted, fontSize: 12.5)),
-                  ],
-                ),
-              ),
-              Text(l10n.track, style: const TextStyle(fontWeight: FontWeight.w800)),
-              const Icon(Icons.arrow_forward, size: 18),
-            ],
-          ),
-        ),
-      ).entrance(),
     );
   }
 }

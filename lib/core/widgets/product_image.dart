@@ -6,17 +6,29 @@ import 'category_icons.dart';
 /// Product photo from the asset bundle. While a photo is missing it shows an
 /// elegant neutral tile, so the UI never breaks.
 class ProductImage extends StatelessWidget {
-  const ProductImage({super.key, required this.path, required this.categoryId, this.fit = BoxFit.cover});
+  const ProductImage({
+    super.key,
+    required this.path,
+    required this.categoryId,
+    this.fit = BoxFit.cover,
+    this.cacheWidth = 420,
+  });
 
   final String path;
   final String categoryId;
   final BoxFit fit;
+
+  /// Decode width in pixels. Small tiles never need the full-size photo.
+  final int cacheWidth;
 
   @override
   Widget build(BuildContext context) {
     return Image.asset(
       path,
       fit: fit,
+      cacheWidth: cacheWidth,
+      gaplessPlayback: true,
+      filterQuality: FilterQuality.medium,
       width: double.infinity,
       height: double.infinity,
       frameBuilder: (context, child, frame, sync) {

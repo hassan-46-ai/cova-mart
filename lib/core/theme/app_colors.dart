@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Cova brand palette: electric cyan on black.
 abstract final class AppColors {
   static const cyan = Color(0xFF38FFF8);
   static const black = Color(0xFF000000);
@@ -9,6 +10,8 @@ abstract final class AppColors {
   static const success = Color(0xFF16A34A);
 }
 
+/// Semantic colours that differ between light and dark mode.
+/// Read with `context.colors`.
 @immutable
 class CovaColors extends ThemeExtension<CovaColors> {
   const CovaColors({

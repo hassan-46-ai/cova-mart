@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/services/local_store.dart';
+import '../../features/auth/auth_controller.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/cart/cart_screen.dart';
@@ -22,13 +24,15 @@ import '../../features/profile/more_screen.dart';
 import '../../features/search/search_screen.dart';
 import '../../features/shell/main_shell.dart';
 import '../../features/splash/splash_screen.dart';
+import '../providers/app_providers.dart';
+import 'route_memory.dart';
 
 CustomTransitionPage<void> _page(GoRouterState state, Widget child) {
   return CustomTransitionPage<void>(
     key: state.pageKey,
     child: child,
-    transitionDuration: const Duration(milliseconds: 320),
-    reverseTransitionDuration: const Duration(milliseconds: 260),
+    transitionDuration: const Duration(milliseconds: 260),
+    reverseTransitionDuration: const Duration(milliseconds: 220),
     transitionsBuilder: (context, animation, secondary, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
       return FadeTransition(
@@ -46,7 +50,11 @@ GoRoute _route(String path, Widget Function(GoRouterState state) builder) =>
     GoRoute(path: path, pageBuilder: (context, state) => _page(state, builder(state)));
 
 final routerProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+  // Make the router's location follow push()/pop() too, so we can remember it.
+  GoRouter.optionURLReflectsImperativeAPIs = true;
+  final store = ref.read(localStoreProvider);
+
+  final router = GoRouter(
     initialLocation: '/splash',
     routes: [
       _route('/splash', (_) => const SplashScreen()),
@@ -75,4 +83,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       _route('/profile/edit', (_) => const EditProfileScreen()),
     ],
   );
+
+  // Remember the last meaningful screen so the app can reopen exactly there.
+  void remember() {
+    final path = router.routerDelegate.currentConfiguration.uri.path;
+    if (RouteMemory.isResumable(path)) store.writeString(StoreKeys.lastRoute, path);
+  }
+
+  // Tapping an order notification opens that order (only when signed in).
+  ref.read(notificationServiceProvider).onOpen = (path) {
+    if (ref.read(authProvider) != null) router.push(path);
+  };
+
+  router.routerDelegate.addListener(remember);
+  ref.onDispose(() => router.routerDelegate.removeListener(remember));
+  return router;
 });

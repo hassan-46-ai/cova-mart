@@ -21,6 +21,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.autofillHints,
     this.textDirection,
+    this.focusNode,
   });
 
   final TextEditingController controller;
@@ -38,12 +39,16 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final Iterable<String>? autofillHints;
   final TextDirection? textDirection;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
+      scrollPadding: const EdgeInsets.fromLTRB(20, 20, 20, 160),
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       validator: validator,
       keyboardType: keyboardType,
       obscureText: obscureText,
@@ -59,7 +64,8 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, size: 21, color: c.muted),
-        suffixIcon: suffix,
+        // The eye / map icon must not become the "next" focus target.
+        suffixIcon: suffix == null ? null : ExcludeFocus(child: suffix!),
       ),
     );
   }
